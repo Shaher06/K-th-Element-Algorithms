@@ -1,11 +1,20 @@
 #include <stdio.h>
 
-int min(int a, int b)
+int getMinimum(int a, int b)
 {
-    return (a < b) ? a : b;
+    if (a < b)
+    {
+        return a;
+    }
+    else
+    {
+        return b;
+    }
 }
-int kthElementRecursiveHelper(int arr1[], int n, int arr2[], int m, int k, int start1, int start2)
+
+int kthElementRecursive(int arr1[], int n, int arr2[], int m, int k, int start1, int start2)
 {
+
     if (start1 == n)
     {
         return arr2[start2 + k - 1];
@@ -16,39 +25,62 @@ int kthElementRecursiveHelper(int arr1[], int n, int arr2[], int m, int k, int s
         return arr1[start1 + k - 1];
     }
 
+
     if (k == 1)
     {
-        return (arr1[start1] < arr2[start2]) ? arr1[start1] : arr2[start2];
+        if (arr1[start1] < arr2[start2])
+        {
+            return arr1[start1];
+        }
+        else
+        {
+            return arr2[start2];
+        }
     }
 
     int half = k / 2;
 
-    int newIndex1 = min(start1 + half, n) - 1;
-    int newIndex2 = min(start2 + half, m) - 1;
+    int index1 = start1 + half - 1;
+    int index2 = start2 + half - 1;
 
-    int pivot1 = arr1[newIndex1];
-    int pivot2 = arr2[newIndex2];
-
-    if (pivot1 <= pivot2)
+    if (index1 >= n)
     {
-        int removed = newIndex1 - start1 + 1;
-        return kthElementRecursiveHelper(arr1, n, arr2, m, k - removed, newIndex1 + 1, start2);
+        index1 = n - 1;
+    }
+
+    if (index2 >= m)
+    {
+        index2 = m - 1;
+    }
+
+    int value1 = arr1[index1];
+    int value2 = arr2[index2];
+
+    if (value1 <= value2)
+    {
+        int removed = index1 - start1 + 1;
+
+        return kthElementRecursive(
+            arr1, n,
+            arr2, m,
+            k - removed,
+            index1 + 1,
+            start2
+        );
     }
     else
     {
-        int removed = newIndex2 - start2 + 1;
-        return kthElementRecursiveHelper(arr1, n, arr2, m, k - removed, start1, newIndex2 + 1);
-    }
-}
 
-int kthElementRecursive(int arr1[], int n, int arr2[], int m, int k)
-{
-    if (k < 1 || k > n + m)
-    {
-        return -1;
-    }
+        int removed = index2 - start2 + 1;
 
-    return kthElementRecursiveHelper(arr1, n, arr2, m, k, 0, 0);
+        return kthElementRecursive(
+            arr1, n,
+            arr2, m,
+            k - removed,
+            start1,
+            index2 + 1
+        );
+    }
 }
 
 int main()
@@ -60,16 +92,15 @@ int main()
     int m = sizeof(arr2) / sizeof(arr2[0]);
     int k = 5;
 
-    int result = kthElementRecursive(arr1, n, arr2, m, k);
-
-    if (result == -1)
+    if (k < 1 || k > n + m)
     {
         printf("Invalid value of k\n");
+        return 0;
     }
-    else
-    {
-        printf("K-th Element = %d\n", result);
-    }
+
+    int result = kthElementRecursive(arr1, n, arr2, m, k, 0, 0);
+
+    printf("K-th Element = %d\n", result);
 
     return 0;
 }

@@ -1,22 +1,4 @@
-Algorithm: kthElementRecursive(arr1, n, arr2, m, k)
-
-1. If k < 1 OR k > n + m:
-      Return -1
-
-2. Return
-      KthElementRecursiveHelper(
-            arr1, n,
-            arr2, m,
-            k,
-            0,
-            0
-      )
-
-
---------------------------------------------------
-
-
-Algorithm: kthElementRecursiveHelper(arr1, n, arr2, m, k, start1, start2)
+Algorithm: kthElementRecursive(arr1, n, arr2, m, k, start1, start2)
 
 1. If start1 == n:
       Return arr2[start2 + k - 1]
@@ -25,46 +7,58 @@ Algorithm: kthElementRecursiveHelper(arr1, n, arr2, m, k, start1, start2)
       Return arr1[start1 + k - 1]
 
 3. If k == 1:
-      Return the smaller value between
-      arr1[start1] and arr2[start2]
+
+      If arr1[start1] < arr2[start2]:
+            Return arr1[start1]
+
+      Else:
+            Return arr2[start2]
 
 4. Set:
       half = k / 2
 
 5. Set:
-      newIndex1 = minimum(start1 + half, n) - 1
+      index1 = start1 + half - 1
 
 6. Set:
-      newIndex2 = minimum(start2 + half, m) - 1
+      index2 = start2 + half - 1
 
-7. Set:
-      pivot1 = arr1[newIndex1]
+7. If index1 >= n:
+      index1 = n - 1
 
-8. Set:
-      pivot2 = arr2[newIndex2]
+8. If index2 >= m:
+      index2 = m - 1
 
-9. If pivot1 <= pivot2:
+9. Set:
+      value1 = arr1[index1]
 
-      removed = newIndex1 - start1 + 1
+10. Set:
+       value2 = arr2[index2]
 
-      Return
-      KthElementRecursiveHelper(
-            arr1, n,
-            arr2, m,
-            k - removed,
-            newIndex1 + 1,
-            start2
-      )
+11. If value1 <= value2:
 
-10. Else:
+       removed = index1 - start1 + 1
 
-      removed = newIndex2 - start2 + 1
+       Return kthElementRecursive(
+              arr1,
+              n,
+              arr2,
+              m,
+              k - removed,
+              index1 + 1,
+              start2
+       )
 
-      Return
-      KthElementRecursiveHelper(
-            arr1, n,
-            arr2, m,
-            k - removed,
-            start1,
-            newIndex2 + 1
-      )
+12. Else:
+
+       removed = index2 - start2 + 1
+
+       Return kthElementRecursive(
+              arr1,
+              n,
+              arr2,
+              m,
+              k - removed,
+              start1,
+              index2 + 1
+       )
